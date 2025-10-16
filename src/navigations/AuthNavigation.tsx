@@ -3,15 +3,16 @@ import AuthHomeScreen from '../screens/auth/AuthHomeScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import {createStaticNavigation} from '@react-navigation/native';
+import {colors} from '../constants/colors';
 
 const AuthStack = createStackNavigator({
   screenOptions: {
     headerTitleAlign: 'center',
     headerBackButtonDisplayMode: 'minimal',
-    headerTintColor: '#000',
+    headerTintColor: colors.BLACK,
     headerStyle: {
-      backgroundColor: 'white',
-      shadowColor: 'gray',
+      backgroundColor: colors.WHITE,
+      shadowColor: colors.GRAY_500,
     },
     headertitlestyle: {
       fontSize: 16,

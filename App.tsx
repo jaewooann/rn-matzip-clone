@@ -1,18 +1,7 @@
-import {
-  Button,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import AuthNavigation from './src/navigations/AuthNavigation';
+import RootNavigation from './src/navigations/RootNavigation';
 
 const App = () => {
-  return <AuthNavigation />;
+  return <RootNavigation />;
 };
-
-const styles = StyleSheet.create({});
 
 export default App;
