@@ -1,9 +1,13 @@
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AuthStackParamList} from '@/types/navigation';
+
+type Navigation = StackNavigationProp<AuthStackParamList>;
 
 const AuthHomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<Navigation>();
 
   useEffect(() => {
     console.log('AuthHomeScreen');
