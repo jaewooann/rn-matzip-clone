@@ -1,14 +1,67 @@
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
-import React from 'react';
+import {SafeAreaView, StyleSheet, TextInput, View} from 'react-native';
+import React, {useRef} from 'react';
+import InputField from '@/components/InputField';
+import CustomButton from '@/components/CustomButton';
+import useForm from '@/hooks/useForm';
+import {validateLogin} from '@/utils/validation';
 
 const LoginScreen = () => {
+  const passwordRef = useRef<TextInput | null>(null);
+  const login = useForm({
+    initialValues: {email: '', password: ''},
+    validate: validateLogin,
+  });
+
+  const handleSubmit = () => {
+    console.log('login.values: ', login.values);
+  };
+
   return (
-    <SafeAreaView>
-      <Text>LoginScreen</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
+        <InputField
+          autoFocus
+          placeholder="이메일"
+          submitBehavior="submit"
+          returnKeyType="next"
+          inputMode="email"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          touched={login.touched.email}
+          error={login.errors.email}
+          {...login.getTextInputProps('email')}
+        />
+        <InputField
+          ref={passwordRef}
+          secureTextEntry
+          placeholder="비밀번호"
+          returnKeyType="done"
+          textContentType="oneTimeCode"
+          touched={login.touched.password}
+          onSubmitEditing={handleSubmit}
+          maxLength={20}
+          error={login.errors.password}
+          {...login.getTextInputProps('password')}
+        />
+      </View>
+      <CustomButton
+        label="로그인"
+        variant="filled"
+        size="large"
+        onPress={handleSubmit}
+      />
     </SafeAreaView>
   );
 };
 
-export default LoginScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 30,
+  },
+  inputContainer: {
+    gap: 20,
+    marginBottom: 30,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default LoginScreen;

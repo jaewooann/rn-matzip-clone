@@ -24,9 +24,9 @@ const AuthStack = createStackNavigator({
   screens: {
     AuthHome: {
       screen: AuthHomeScreen,
-      // options: {
-      //   headerShown: false,
-      // },
+      options: {
+        headerShown: false,
+      },
     },
     Login: {
       screen: LoginScreen,

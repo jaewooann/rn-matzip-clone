@@ -25,6 +25,7 @@ export type MainDrawerParamList = {
   Calendar: undefined;
 };
 
+// 전역 타입 커스터마이징
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends MainDrawerParamList {}
