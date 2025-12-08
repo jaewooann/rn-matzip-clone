@@ -1,11 +1,46 @@
 import {QueryClientProvider} from '@tanstack/react-query';
 import RootNavigation from './src/navigations/RootNavigation';
 import queryClient from '@/api/queryClient';
+import Toast, {
+  BaseToast,
+  BaseToastProps,
+  ErrorToast,
+} from 'react-native-toast-message';
+import {colors} from '@/constants/colors';
+
+const toastConfig = {
+  success: (props: BaseToastProps) => (
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftColor: colors.BLUE_500,
+        elevation: 99,
+        zIndex: 99,
+      }}
+      text1Style={{fontSize: 14}}
+      text2Style={{fontSize: 12}}
+    />
+  ),
+
+  error: (props: BaseToastProps) => (
+    <ErrorToast
+      {...props}
+      style={{
+        borderLeftColor: colors.RED_500,
+        elevation: 99,
+        zIndex: 99,
+      }}
+      text1Style={{fontSize: 14}}
+      text2Style={{fontSize: 12}}
+    />
+  ),
+};
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <RootNavigation />
+      <Toast config={toastConfig} />
     </QueryClientProvider>
   );
 };
