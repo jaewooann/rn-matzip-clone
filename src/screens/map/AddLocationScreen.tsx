@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {StackScreenProps} from '@react-navigation/stack';
 import {MapStackParamList} from '@/types/navigation';
@@ -18,11 +18,14 @@ import ImageInput from '@/components/ImageInput';
 import usePermission from '@/hooks/usePermission';
 import useImagePicker from '@/hooks/useImagePicker';
 import PreviewImageList from '@/components/PreviewImageList';
+import useMutationCreatePost from '@/hooks/queries/useMutationCreatePost';
+import {useNavigation} from '@react-navigation/native';
 
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
 const AddLocationScreen = ({route}: Props) => {
   const {location} = route.params;
+  const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   const address = useGetAddress(location);
   const [openDate, setOpenDate] = useState(false);
@@ -37,11 +40,21 @@ const AddLocationScreen = ({route}: Props) => {
     },
     validate: validateAddPost,
   });
-
+  const createPost = useMutationCreatePost();
   usePermission('PHOTO');
 
   const handleSubmit = () => {
-    console.log('postform.values: ', postForm.values);
+    createPost.mutate(
+      {
+        address,
+        ...location,
+        ...postForm.values,
+        imageUris: imagePicker.imageUris,
+      },
+      {
+        onSuccess: () => navigation.goBack(),
+      },
+    );
   };
 
   return (
@@ -96,8 +109,13 @@ const AddLocationScreen = ({route}: Props) => {
           onCancel={() => setOpenDate(false)}
         />
 
-        <ImageInput onChange={imagePicker.handleChangeImage} />
-        <PreviewImageList imageUris={imagePicker.imageUris} />
+        <View style={{flexDirection: 'row'}}>
+          <ImageInput onChange={imagePicker.handleChangeImage} />
+          <PreviewImageList
+            imageUris={imagePicker.imageUris}
+            onDelete={imagePicker.delete}
+          />
+        </View>
       </ScrollView>
       <FixedBottomCTA label="저장" onPress={handleSubmit} />
     </>
