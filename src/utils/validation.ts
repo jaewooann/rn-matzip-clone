@@ -45,4 +45,20 @@ function validateSignup(
   return signupErrors;
 }
 
-export {validateLogin, validateSignup};
+function validateAddPost(values: {title: string}) {
+  const errors = {
+    title: '',
+    description: '',
+    date: '',
+    color: '',
+    score: '',
+  };
+
+  if (values.title.trim() === '') {
+    errors.title = '제목은 1~30자 이내로 입력해주세요.';
+  }
+
+  return errors;
+}
+
+export {validateLogin, validateSignup, validateAddPost};
