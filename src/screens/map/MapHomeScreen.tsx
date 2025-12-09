@@ -9,12 +9,14 @@ import useUserLocation from '@/hooks/useUserLocation';
 import {numbers} from '@/constants/numbers';
 import usePermission from '@/hooks/usePermission';
 import Toast from 'react-native-toast-message';
+import Config from 'react-native-config';
 
 const MapHomeScreen = () => {
   const inset = useSafeAreaInsets();
   const mapRef = useRef<MapView | null>(null);
   const {userLocation, isUserLocationError} = useUserLocation();
   usePermission('LOCATION');
+  console.log(Config.GOOGLE_MAP_API_KEY);
 
   const moveMapView = (coordinate: LatLng) => {
     mapRef.current?.animateToRegion({
