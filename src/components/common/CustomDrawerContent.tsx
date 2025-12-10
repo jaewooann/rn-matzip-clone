@@ -12,7 +12,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {colors} from '../constants/colors';
+import {colors} from '../../constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {

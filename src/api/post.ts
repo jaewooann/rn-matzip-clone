@@ -7,4 +7,16 @@ async function createPost(body: Omit<Post, 'id'>): Promise<Post> {
   return data;
 }
 
-export {createPost};
+async function getPost(id: number): Promise<Post> {
+  const {data} = await axiosInstance.get(`/posts/${id}`);
+
+  return data;
+}
+
+async function getPosts(page = 1): Promise<Post[]> {
+  const {data} = await axiosInstance.get(`/posts?page=${page}`);
+
+  return data;
+}
+
+export {createPost, getPost, getPosts};

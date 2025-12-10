@@ -8,9 +8,14 @@ import {colors} from '@/constants/colors';
 interface PreviewImageListProps {
   imageUris: ImageUri[];
   onDelete: (uri: string) => void;
+  showDeleteButton?: boolean;
 }
 
-const PreviewImageList = ({imageUris, onDelete}: PreviewImageListProps) => {
+const PreviewImageList = ({
+  imageUris,
+  onDelete,
+  showDeleteButton = false,
+}: PreviewImageListProps) => {
   return (
     <ScrollView horizontal contentContainerStyle={styles.container}>
       {imageUris.map(({uri}) => {
@@ -25,11 +30,13 @@ const PreviewImageList = ({imageUris, onDelete}: PreviewImageListProps) => {
               }}
               resizeMode="cover"
             />
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => onDelete?.(uri)}>
-              <Ionicons name="close" size={16} color={colors.WHITE} />
-            </Pressable>
+            {showDeleteButton && (
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => onDelete?.(uri)}>
+                <Ionicons name="close" size={16} color={colors.WHITE} />
+              </Pressable>
+            )}
           </Pressable>
         );
       })}

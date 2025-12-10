@@ -2,24 +2,24 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {StackScreenProps} from '@react-navigation/stack';
 import {MapStackParamList} from '@/types/navigation';
-import InputField from '@/components/InputField';
-import CustomButton from '@/components/CustomButton';
+import InputField from '@/components/common/InputField';
+import CustomButton from '@/components/common/CustomButton';
 import useForm from '@/hooks/useForm';
 import {validateAddPost} from '@/utils/validation';
 import useGetAddress from '@/hooks/useGetAddress';
 import DatePicker from 'react-native-date-picker';
 import {getDateWithSeparator} from '@/utils/date';
-import MarkerColorInput from '@/components/MarkerColorInput';
+import MarkerColorInput from '@/components/post/MarkerColorInput';
 import {colors} from '@/constants/colors';
-import ScoreInput from '@/components/ScoreInput';
-import FixedBottomCTA from '@/components/FixedBottomCTA';
+import FixedBottomCTA from '@/components/common/FixedBottomCTA';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ImageInput from '@/components/ImageInput';
+import ImageInput from '@/components/post/ImageInput';
 import usePermission from '@/hooks/usePermission';
 import useImagePicker from '@/hooks/useImagePicker';
-import PreviewImageList from '@/components/PreviewImageList';
 import useMutationCreatePost from '@/hooks/queries/useMutationCreatePost';
 import {useNavigation} from '@react-navigation/native';
+import PreviewImageList from '@/components/common/PreviewImageList';
+import ScoreInput from '@/components/post/ScoreInput';
 
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
@@ -114,6 +114,7 @@ const AddLocationScreen = ({route}: Props) => {
           <PreviewImageList
             imageUris={imagePicker.imageUris}
             onDelete={imagePicker.delete}
+            showDeleteButton={true}
           />
         </View>
       </ScrollView>

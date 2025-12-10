@@ -1,20 +1,22 @@
 import {Alert, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import DrawerButton from '@/components/DrawerButton';
+import DrawerButton from '@/components/common/DrawerButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors} from '@/constants/colors';
 import useUserLocation from '@/hooks/useUserLocation';
 import {numbers} from '@/constants/numbers';
 import usePermission from '@/hooks/usePermission';
 import Toast from 'react-native-toast-message';
-import CustomMarker from '@/components/CustomMarker';
+import CustomMarker from '@/components/common/CustomMarker';
 import useMoveMapView from '@/hooks/useMoveMapView';
-import MapIconButton from '@/components/MapIconButton';
+import MapIconButton from '@/components/map/MapIconButton';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {MapStackParamList} from '@/types/navigation';
 import useGetMarkers from '@/hooks/useGetMarkers';
+import MarkerModal from '@/components/map/MarkerModal';
+import useModal from '@/hooks/useModal';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -23,8 +25,11 @@ const MapHomeScreen = () => {
   const inset = useSafeAreaInsets();
   const {userLocation, isUserLocationError} = useUserLocation();
   const [selectLocation, setSelectLocation] = useState<LatLng | null>(null);
+  const [markerId, setMarkerId] = useState<number | null>(null);
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
   const {data: markers = []} = useGetMarkers();
+  const markerModal = useModal();
+
   usePermission('LOCATION');
 
   const handlePressUserLocation = () => {
@@ -40,8 +45,10 @@ const MapHomeScreen = () => {
     moveMapView(userLocation);
   };
 
-  const handlePressMarker = (coordinate: LatLng) => {
+  const handlePressMarker = (id: number, coordinate: LatLng) => {
+    setMarkerId(id);
     moveMapView(coordinate);
+    markerModal.show();
   };
 
   const handlePressAddPost = () => {
@@ -84,7 +91,7 @@ const MapHomeScreen = () => {
             color={color}
             score={score}
             coordinate={coordinate}
-            onPress={() => handlePressMarker(coordinate)}
+            onPress={() => handlePressMarker(id, coordinate)}
           />
         ))}
         {selectLocation && <Marker coordinate={selectLocation} />}
@@ -96,6 +103,12 @@ const MapHomeScreen = () => {
           onPress={handlePressUserLocation}
         />
       </View>
+
+      <MarkerModal
+        markerId={Number(markerId)}
+        isVisible={markerModal.isVisible}
+        hide={markerModal.hide}
+      />
     </>
   );
 };
