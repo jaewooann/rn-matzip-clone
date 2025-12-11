@@ -28,6 +28,7 @@ const MapHomeScreen = () => {
   const [markerId, setMarkerId] = useState<number | null>(null);
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
   const {data: markers = []} = useGetMarkers();
+
   const markerModal = useModal();
 
   usePermission('LOCATION');

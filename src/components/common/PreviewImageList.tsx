@@ -7,7 +7,7 @@ import {colors} from '@/constants/colors';
 
 interface PreviewImageListProps {
   imageUris: ImageUri[];
-  onDelete: (uri: string) => void;
+  onDelete?: (uri: string) => void;
   showDeleteButton?: boolean;
 }
 

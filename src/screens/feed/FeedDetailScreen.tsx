@@ -18,24 +18,49 @@ import {BASE_URL} from '@/api/axios';
 import {getDateWithSeparator} from '@/utils/date';
 import CustomButton from '@/components/common/CustomButton';
 import PreviewImageList from '@/components/common/PreviewImageList';
+import {useNavigation} from '@react-navigation/native';
+import useLocationStore from '@/store/location';
+import FeedDetailActionSheet from '@/components/feed/FeedDetailActionSheet';
+import useModal from '@/hooks/useModal';
 
 type Props = StackScreenProps<FeedStackParamList, 'FeedDetail'>;
 
 const FeedDetailScreen = ({route}: Props) => {
   const {id} = route.params;
-
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const {data: post, isPending, isError} = useGetPost(id);
+  const {setMoveLocation} = useLocationStore();
+  const detailAction = useModal();
 
   if (isPending || isError) {
     return <></>;
   }
 
+  const handlePressLocation = () => {
+    const {latitude, longitude} = post;
+    setMoveLocation({latitude, longitude});
+
+    navigation.navigate('Map', {
+      screen: 'MapHome',
+    });
+  };
+
   return (
     <>
       <View style={[styles.header, {top: insets.top}]}>
-        <Ionicons name="chevron-back" size={30} color={colors.WHITE} />
-        <Ionicons name="ellipsis-vertical" size={30} color={colors.WHITE} />
+        <Ionicons
+          name="chevron-back"
+          size={30}
+          color={colors.WHITE}
+          onPress={() => navigation.goBack()}
+        />
+        <Ionicons
+          name="ellipsis-vertical"
+          size={30}
+          color={colors.WHITE}
+          onPress={detailAction.show}
+        />
       </View>
       <ScrollView>
         <View style={styles.imageContainer}>
@@ -108,8 +133,18 @@ const FeedDetailScreen = ({route}: Props) => {
           label={<Ionicons name="star" size={25} color={colors.WHITE} />}
           style={{paddingHorizontal: 5}}
         />
-        <CustomButton size="small" label="위치보기" style={{width: '50%'}} />
+        <CustomButton
+          size="small"
+          label="위치보기"
+          style={{width: '50%'}}
+          onPress={handlePressLocation}
+        />
       </View>
+
+      <FeedDetailActionSheet
+        isVisible={detailAction.isVisible}
+        hideAction={detailAction.hide}
+      />
     </>
   );
 };
