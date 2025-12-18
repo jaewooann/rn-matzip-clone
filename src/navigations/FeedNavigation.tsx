@@ -5,6 +5,7 @@ import FeedFavoriteScreen from '@/screens/feed/FeedFavoriteScreen';
 import EditLocationScreen from '@/screens/feed/EditLocationScreen';
 import {colors} from '@/constants/colors';
 import DrawerButton from '@/components/common/DrawerButton';
+import ImageZoomScreen from '@/screens/feed/ImageZoomScreen';
 
 export const FeedStack = createStackNavigator({
   screenOptions: {
@@ -40,6 +41,12 @@ export const FeedStack = createStackNavigator({
       screen: EditLocationScreen,
       options: {
         title: '장소 수정',
+      },
+    },
+    ImageZoom: {
+      screen: ImageZoomScreen,
+      options: {
+        headerShown: false,
       },
     },
   },
