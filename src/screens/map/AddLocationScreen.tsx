@@ -29,7 +29,7 @@ const AddLocationScreen = ({route}: Props) => {
   const inset = useSafeAreaInsets();
   const address = useGetAddress(location);
   const [openDate, setOpenDate] = useState(false);
-  const imagePicker = useImagePicker();
+  const imagePicker = useImagePicker({initialImages: []});
   const postForm = useForm({
     initialValues: {
       title: '',

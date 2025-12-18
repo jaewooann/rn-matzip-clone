@@ -1,6 +1,6 @@
 import {colors} from '@/constants/colors';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import {PropsWithChildren} from 'react';
+import {createContext, PropsWithChildren, useContext} from 'react';
 import {
   GestureResponderEvent,
   Modal,
@@ -12,6 +12,14 @@ import {
   Text,
   View,
 } from 'react-native';
+
+interface ActionSheetContextValue {
+  onPressOutside?: (event: GestureResponderEvent) => void;
+}
+
+const ActionSheetContext = createContext<ActionSheetContextValue | undefined>(
+  undefined,
+);
 
 interface ActionMainProps extends ModalProps {
   children: React.ReactNode;
@@ -40,10 +48,22 @@ function ActionMain({
       animationType={animationType}
       onRequestClose={hideAction}
       {...props}>
-      <SafeAreaView style={styles.actionBackground} onTouchEnd={onPressOutside}>
+      <ActionSheetContext value={{onPressOutside}}>
         {children}
-      </SafeAreaView>
+      </ActionSheetContext>
     </Modal>
+  );
+}
+
+function Background({children}: PropsWithChildren) {
+  const actionSheetContext = useContext(ActionSheetContext);
+
+  return (
+    <SafeAreaView
+      style={styles.actionBackground}
+      onTouchEnd={actionSheetContext?.onPressOutside}>
+      {children}
+    </SafeAreaView>
   );
 }
 
@@ -98,6 +118,7 @@ export const ActionSheet = Object.assign(ActionMain, {
   Container,
   Button,
   Title,
+  Background,
   Divider,
 });
 

@@ -28,10 +28,12 @@ const MarkerModal = ({markerId, isVisible, hide}: MarkerModalProps) => {
     return <></>;
   }
 
+  const handlePressModal = () => {};
+
   return (
     <Modal visible={isVisible} transparent animationType="slide">
       <SafeAreaView style={styles.background} onTouchEnd={hide}>
-        <Pressable style={styles.cardContainer}>
+        <Pressable style={styles.cardContainer} onPress={handlePressModal}>
           <View style={styles.cardInner}>
             <View style={styles.cardAlign}>
               {post.imageUris.length > 0 && (
