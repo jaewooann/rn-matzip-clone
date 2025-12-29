@@ -20,4 +20,51 @@ function getDateWithSeparator(
   ].join(separator);
 }
 
-export {getDateWithSeparator};
+export type MonthYear = {
+  month: number;
+  year: number;
+  startDate: Date;
+  firstDOW: number;
+  lastDate: number;
+};
+
+function getMonthYearDetails(initialDate: Date) {
+  const month = initialDate.getMonth() + 1;
+  const year = initialDate.getFullYear();
+  const startDate = new Date(`${year}-${month}`);
+  const firstDOW = startDate.getDay(); // 0(일요일) ~ 6(토요일)
+  const lastDateString = String(
+    new Date(
+      initialDate.getFullYear(),
+      initialDate.getMonth() + 1,
+      0,
+    ).getDate(),
+  );
+  const lastDate = Number(lastDateString);
+
+  return {month, year, firstDOW, startDate, lastDate};
+}
+
+function getNewMonthYear(prevDate: MonthYear, increment: number) {
+  const newMonthYear = new Date(
+    prevDate.startDate.setMonth(prevDate.startDate.getMonth() + increment),
+  );
+
+  return getMonthYearDetails(newMonthYear);
+}
+
+function isSameAsCurrentDate(year: number, month: number, date: number) {
+  const currentDate = getDateWithSeparator(new Date());
+  const inputDate = `${year}${String(month).padStart(2, '0')}${String(
+    date,
+  ).padStart(2, '0')}`;
+
+  return currentDate === inputDate;
+}
+
+export {
+  getDateWithSeparator,
+  getMonthYearDetails,
+  getNewMonthYear,
+  isSameAsCurrentDate,
+};
