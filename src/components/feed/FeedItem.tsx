@@ -15,6 +15,7 @@ import {colors} from '@/constants/colors';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {FeedStackParamList} from '@/types/navigation';
+import useThemeStore, {Theme} from '@/store/theme';
 
 interface FeedItemProps {
   post: Post;
@@ -22,6 +23,9 @@ interface FeedItemProps {
 
 const FeedItem = ({post}: FeedItemProps) => {
   const navigation = useNavigation<StackNavigationProp<FeedStackParamList>>();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   return (
     <Pressable
       style={styles.container}
@@ -59,46 +63,47 @@ const FeedItem = ({post}: FeedItemProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 5,
-    marginVertical: 12,
-  },
-  imageContainer: {
-    width: Dimensions.get('screen').width / 2 - 25,
-    height: Dimensions.get('screen').width / 2 - 25,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 5,
-  },
-  emptyImageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.GRAY_200,
-    borderRadius: 5,
-  },
-  textContainer: {
-    marginTop: 7,
-    gap: 2,
-  },
-  dateText: {
-    color: colors.PINK_700,
-    fontWeight: '600',
-    fontSize: 12,
-  },
-  titleText: {
-    color: colors.BLACK,
-    fontWeight: '500',
-    fontSize: 13,
-  },
-  descriptionText: {
-    color: colors.GRAY_500,
-    fontSize: 13,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      margin: 5,
+      marginVertical: 12,
+    },
+    imageContainer: {
+      width: Dimensions.get('screen').width / 2 - 25,
+      height: Dimensions.get('screen').width / 2 - 25,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 5,
+    },
+    emptyImageContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: colors[theme].GRAY_200,
+      borderRadius: 5,
+    },
+    textContainer: {
+      marginTop: 7,
+      gap: 2,
+    },
+    dateText: {
+      color: colors[theme].PINK_700,
+      fontWeight: '600',
+      fontSize: 12,
+    },
+    titleText: {
+      color: colors[theme].BLACK,
+      fontWeight: '500',
+      fontSize: 13,
+    },
+    descriptionText: {
+      color: colors[theme].GRAY_500,
+      fontSize: 13,
+    },
+  });
 
 export default FeedItem;

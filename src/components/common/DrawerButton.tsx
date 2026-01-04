@@ -13,7 +13,10 @@ interface DrawerButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const DrawerButton = ({style, color = colors.BLACK}: DrawerButtonProps) => {
+const DrawerButton = ({
+  style,
+  color = colors.light.BLACK,
+}: DrawerButtonProps) => {
   const navigation = useNavigation<Navigation>();
 
   return (

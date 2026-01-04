@@ -2,6 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {LatLng, Marker, MyMapMarkerProps} from 'react-native-maps';
 import {colors} from '@/constants/colors';
+import useThemeStore, {Theme} from '@/store/theme';
 
 interface CustomMarkerProps extends MyMapMarkerProps {
   coordinate?: LatLng;
@@ -15,6 +16,9 @@ const CustomMarker = ({
   score = 5,
   ...props
 }: CustomMarkerProps) => {
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+
   const markerView = (
     <View style={styles.container}>
       <View style={[styles.marker, {backgroundColor: color}]}>
@@ -36,64 +40,65 @@ const CustomMarker = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: 35,
-    width: 32,
-    alignItems: 'center',
-  },
-  marker: {
-    transform: [{rotate: '45deg'}],
-    width: 27,
-    height: 27,
-    borderRadius: 27,
-    borderBottomRightRadius: 1,
-    borderColor: colors.BLACK,
-    borderWidth: 1,
-  },
-  eye: {
-    position: 'absolute',
-    backgroundColor: colors.BLACK,
-    width: 4,
-    height: 4,
-    borderRadius: 4,
-  },
-  leftEye: {
-    top: 12,
-    left: 5,
-  },
-  rightEye: {
-    top: 5,
-    left: 12,
-  },
-  mouth: {
-    transform: [{rotate: '45deg'}],
-    width: 12,
-    height: 12,
-    borderWidth: 1,
-    borderRadius: 12,
-    borderTopColor: 'rgba(255,255,255 / 0.01)',
-    borderBottomColor: 'rgba(255,255,255 / 0.01)',
-  },
-  good: {
-    marginLeft: 5,
-    marginTop: 5,
-    borderLeftColor: 'rgba(255,255,255 / 0.01)',
-  },
-  bad: {
-    marginLeft: 12,
-    marginTop: 12,
-    borderRightColor: 'rgba(255,255,255 / 0.01)',
-  },
-  soso: {
-    transform: [{rotate: '45deg'}],
-    width: 8,
-    height: 8,
-    borderLeftColor: colors.BLACK,
-    borderLeftWidth: 1,
-    marginLeft: 13,
-    marginTop: 13,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      height: 35,
+      width: 32,
+      alignItems: 'center',
+    },
+    marker: {
+      transform: [{rotate: '45deg'}],
+      width: 27,
+      height: 27,
+      borderRadius: 27,
+      borderBottomRightRadius: 1,
+      borderColor: colors[theme].BLACK,
+      borderWidth: 1,
+    },
+    eye: {
+      position: 'absolute',
+      backgroundColor: colors[theme].BLACK,
+      width: 4,
+      height: 4,
+      borderRadius: 4,
+    },
+    leftEye: {
+      top: 12,
+      left: 5,
+    },
+    rightEye: {
+      top: 5,
+      left: 12,
+    },
+    mouth: {
+      transform: [{rotate: '45deg'}],
+      width: 12,
+      height: 12,
+      borderWidth: 1,
+      borderRadius: 12,
+      borderTopColor: 'rgba(255,255,255 / 0.01)',
+      borderBottomColor: 'rgba(255,255,255 / 0.01)',
+    },
+    good: {
+      marginLeft: 5,
+      marginTop: 5,
+      borderLeftColor: 'rgba(255,255,255 / 0.01)',
+    },
+    bad: {
+      marginLeft: 12,
+      marginTop: 12,
+      borderRightColor: 'rgba(255,255,255 / 0.01)',
+    },
+    soso: {
+      transform: [{rotate: '45deg'}],
+      width: 8,
+      height: 8,
+      borderLeftColor: colors[theme].BLACK,
+      borderLeftWidth: 1,
+      marginLeft: 13,
+      marginTop: 13,
+    },
+  });
 
 export default CustomMarker;

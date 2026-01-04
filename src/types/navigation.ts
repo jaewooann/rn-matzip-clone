@@ -21,10 +21,16 @@ export type FeedStackParamList = {
   ImageZoom: {id?: number; index: number};
 };
 
+export type SettingStackParamList = {
+  SettingHome: undefined;
+  EditProfile: undefined;
+};
+
 export type MainDrawerParamList = {
   Map: NavigatorScreenParams<MapStackParamList>;
   Feed: NavigatorScreenParams<FeedStackParamList>;
   Calendar: undefined;
+  Setting: undefined;
 };
 
 // 전역 타입 커스터마이징

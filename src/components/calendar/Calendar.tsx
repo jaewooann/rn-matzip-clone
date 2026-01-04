@@ -6,6 +6,7 @@ import {isSameAsCurrentDate, MonthYear} from '@/utils/date';
 import DayOfWeeks from './DayOfWeeks';
 import DateBox from './DateBox';
 import {ResponseCalendarPost} from '@/api/post';
+import useThemeStore, {Theme} from '@/store/theme';
 
 interface CalendarProps {
   monthYear: MonthYear;
@@ -23,12 +24,14 @@ const Calendar = ({
   schedules,
 }: CalendarProps) => {
   const {month, year, startDate, firstDOW, lastDate} = monthYear;
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
 
   return (
     <>
       <View style={styles.headerContainer}>
         <Pressable style={styles.monthButton} onPress={() => onChangeMonth(-1)}>
-          <Ionicons name="arrow-back" size={25} color={colors.BLACK} />
+          <Ionicons name="arrow-back" size={25} color={colors[theme].BLACK} />
         </Pressable>
         <Pressable style={styles.monthYearContainer}>
           <Text style={styles.monthYearText}>
@@ -36,7 +39,11 @@ const Calendar = ({
           </Text>
         </Pressable>
         <Pressable style={styles.monthButton} onPress={() => onChangeMonth(1)}>
-          <Ionicons name="arrow-forward" size={25} color={colors.BLACK} />
+          <Ionicons
+            name="arrow-forward"
+            size={25}
+            color={colors[theme].BLACK}
+          />
         </Pressable>
       </View>
 
@@ -64,32 +71,33 @@ const Calendar = ({
   );
 };
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 25,
-    marginVertical: 16,
-  },
-  monthYearContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-  },
-  monthButton: {
-    padding: 10,
-  },
-  monthYearText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.BLACK,
-  },
-  bodyContainer: {
-    backgroundColor: colors.GRAY_100,
-    borderBottomColor: colors.GRAY_300,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginHorizontal: 25,
+      marginVertical: 16,
+    },
+    monthYearContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+    },
+    monthButton: {
+      padding: 10,
+    },
+    monthYearText: {
+      fontSize: 18,
+      fontWeight: '500',
+      color: colors[theme].BLACK,
+    },
+    bodyContainer: {
+      backgroundColor: colors[theme].GRAY_100,
+      borderBottomColor: colors[theme].GRAY_300,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+  });
 
 export default Calendar;

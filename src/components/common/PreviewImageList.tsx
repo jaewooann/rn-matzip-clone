@@ -11,6 +11,7 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import {FeedStackParamList} from '@/types/navigation';
+import useThemeStore, {Theme} from '@/store/theme';
 
 interface PreviewImageListProps {
   imageUris: ImageUri[];
@@ -25,6 +26,8 @@ const PreviewImageList = ({
 }: PreviewImageListProps) => {
   const navigation = useNavigation<NavigationProp<FeedStackParamList>>();
   const route = useRoute<RouteProp<FeedStackParamList>>();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
 
   const handlePressImage = (index: number) => {
     navigation.navigate('ImageZoom', {
@@ -54,7 +57,7 @@ const PreviewImageList = ({
               <Pressable
                 style={styles.deleteButton}
                 onPress={() => onDelete?.(uri)}>
-                <Ionicons name="close" size={16} color={colors.WHITE} />
+                <Ionicons name="close" size={16} color={colors[theme].WHITE} />
               </Pressable>
             )}
           </Pressable>
@@ -64,25 +67,26 @@ const PreviewImageList = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: 15,
-    paddingHorizontal: 15,
-  },
-  imageContainer: {
-    width: 70,
-    height: 70,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  deleteButton: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: colors.BLACK,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      gap: 15,
+      paddingHorizontal: 15,
+    },
+    imageContainer: {
+      width: 70,
+      height: 70,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    deleteButton: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      backgroundColor: colors[theme].BLACK,
+    },
+  });
 
 export default PreviewImageList;

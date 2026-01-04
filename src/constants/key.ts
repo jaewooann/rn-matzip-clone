@@ -11,8 +11,10 @@ const queryKeys = {
   GET_CALENDAR_POSTS: 'getCalendarPosts',
 };
 
-const storageKey = {
+const storageKeys = {
   REFRESH_TOKEN: 'refreshToken',
+  THEME_MODE: 'themeMode',
+  THEME_SYSTEM: 'themeSystem',
 };
 
-export {queryKeys, storageKey};
+export {queryKeys, storageKeys};

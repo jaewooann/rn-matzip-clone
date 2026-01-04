@@ -1,5 +1,6 @@
 import {
   Image,
+  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -14,11 +15,17 @@ import {
 } from '@react-navigation/drawer';
 import {colors} from '../../constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
+import {useNavigation} from '@react-navigation/native';
+import Ionicons from '@react-native-vector-icons/ionicons';
+import {BASE_URL} from '@/api/axios';
+import useThemeStore, {Theme} from '@/store/theme';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   const {auth} = useAuth();
-
-  console.log(auth);
+  const navigation = useNavigation();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+  // console.log(auth);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,7 +36,15 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         <Pressable style={styles.profileContainer}>
           <View style={styles.userImageContainer}>
             <Image
-              source={require('@/assets/default-user.png')}
+              source={
+                auth.imageUri
+                  ? {
+                      uri: `${
+                        Platform.OS === 'ios' ? BASE_URL.ios : BASE_URL.android
+                      }/${auth.imageUri}`,
+                    }
+                  : require('@/assets/default-user.png')
+              }
               style={styles.userImage}
             />
           </View>
@@ -38,7 +53,16 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
       <View style={styles.bottomContainer}>
-        <Text style={styles.menuText}>설정</Text>
+        <Pressable
+          style={styles.bottomMenu}
+          onPress={() => navigation.navigate('Setting')}>
+          <Ionicons
+            name="settings-outline"
+            size={20}
+            color={colors[theme].BLACK}
+          />
+          <Text style={styles.menuText}>설정</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -46,40 +70,46 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
 export default CustomDrawerContent;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    gap: 5,
-    marginTop: 30,
-  },
-  profileContainer: {
-    alignItems: 'center',
-    marginBottom: 30,
-    gap: 5,
-  },
-  userImageContainer: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-  },
-  userImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 35,
-  },
-  nickname: {
-    fontSize: 14,
-  },
-  bottomContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: colors.GRAY_200,
-  },
-  menuText: {
-    fontSize: 15,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    contentContainer: {
+      gap: 5,
+      marginTop: 30,
+    },
+    profileContainer: {
+      alignItems: 'center',
+      marginBottom: 30,
+      gap: 5,
+    },
+    userImageContainer: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+    },
+    userImage: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 35,
+    },
+    nickname: {
+      fontSize: 14,
+    },
+    bottomContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      padding: 20,
+      borderTopWidth: 1,
+      borderTopColor: colors[theme].GRAY_200,
+    },
+    menuText: {
+      fontSize: 15,
+    },
+    bottomMenu: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+    },
+  });

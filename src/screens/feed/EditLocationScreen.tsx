@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FeedStackParamList} from '@/types/navigation';

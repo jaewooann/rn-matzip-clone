@@ -1,6 +1,5 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CalendarScreen from '@/screens/calendar/CalendarScreen';
-import {createStaticNavigation} from '@react-navigation/native';
 import {MapStack} from '@/navigations/MapNavigation';
 import DrawerButton from '@/components/common/DrawerButton';
 import {colors} from '@/constants/colors';
@@ -8,11 +7,19 @@ import CustomDrawerContent from '@/components/common/CustomDrawerContent';
 import {MainDrawerParamList} from '@/types/navigation';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import {FeedStack} from '@/navigations/FeedNavigation';
+import {SettingStack} from './SettingNavigation';
+import useThemeStore, {Theme} from '@/store/theme';
+
+const Drawer = createDrawerNavigator();
 
 type DrawerIconName = 'map' | 'book' | 'calendar';
 
-function DrawerIcons(routeName: keyof MainDrawerParamList, focused: boolean) {
-  let iconName: DrawerIconName;
+function DrawerIcons(
+  routeName: keyof MainDrawerParamList,
+  focused: boolean,
+  theme: Theme,
+) {
+  let iconName: DrawerIconName = 'map';
 
   switch (routeName) {
     case 'Map': {
@@ -34,69 +41,85 @@ function DrawerIcons(routeName: keyof MainDrawerParamList, focused: boolean) {
       name={iconName}
       iconStyle="solid"
       size={20}
-      color={focused ? colors.WHITE : colors.GRAY_300}
+      color={focused ? colors[theme].WHITE : colors[theme].GRAY_300}
     />
   );
 }
 
-const MainDrawer = createDrawerNavigator({
-  screenOptions: ({route}) => {
-    return {
-      drawerStyle: {
-        width: '60%',
-        backgroundColor: colors.WHITE,
-      },
-      drawerLabelStyle: {
-        fontWeight: '600',
-      },
-      drawerItemStyle: {
-        borderRadius: 5,
-      },
-      drawerType: 'front',
-      drawerActiveTintColor: colors.WHITE,
-      drawerActiveBackgroundColor: colors.PINK_700,
-      drawerInactiveTintColor: colors.GRAY_500,
-      drawerInactiveBackgroundColor: colors.GRAY_100,
-      drawerIcon: ({focused}) =>
-        DrawerIcons(route.name as keyof MainDrawerParamList, focused),
-      headerTitleAlign: 'center',
-      headerBackButtonDisplayMode: 'minimal',
-      headerTintColor: colors.BLACK,
-      headerStyle: {
-        backgroundColor: colors.WHITE,
-        shadowColor: colors.GRAY_500,
-      },
-      headertitlestyle: {
-        fontSize: 16,
-      },
-    };
-  },
-  screens: {
-    Map: {
-      screen: MapStack,
-      options: {
-        title: '홈',
-        headerShown: false,
-      },
-    },
-    Feed: {
-      screen: FeedStack,
-      options: {
-        title: '피드',
-        headerShown: false,
-      },
-    },
-    Calendar: {
-      screen: CalendarScreen,
-      options: {
-        title: '캘린더',
-        headerLeft: () => <DrawerButton />,
-      },
-    },
-  },
-  drawerContent: props => <CustomDrawerContent {...props} />,
-});
+export default function DrawerNavigation() {
+  const {theme} = useThemeStore();
 
-const DrawerNavigation = createStaticNavigation(MainDrawer);
-
-export default DrawerNavigation;
+  return (
+    <Drawer.Navigator
+      drawerContent={props => <CustomDrawerContent {...props} />}
+      screenOptions={({route}) => {
+        return {
+          drawerStyle: {
+            width: '60%',
+            backgroundColor: colors[theme].WHITE,
+          },
+          drawerLabelStyle: {
+            fontWeight: '600',
+          },
+          drawerItemStyle: {
+            borderRadius: 5,
+          },
+          drawerType: 'front',
+          drawerActiveTintColor: colors[theme].WHITE,
+          drawerActiveBackgroundColor: colors[theme].PINK_700,
+          drawerInactiveTintColor: colors[theme].GRAY_500,
+          drawerInactiveBackgroundColor: colors[theme].GRAY_100,
+          drawerIcon: ({focused}) =>
+            DrawerIcons(
+              route.name as keyof MainDrawerParamList,
+              focused,
+              theme,
+            ),
+          headerTitleAlign: 'center',
+          headerBackButtonDisplayMode: 'minimal',
+          headerTintColor: colors[theme].BLACK,
+          headerStyle: {
+            backgroundColor: colors[theme].WHITE,
+            shadowColor: colors[theme].GRAY_500,
+          },
+          headerTitleStyle: {
+            fontSize: 16,
+          },
+        };
+      }}>
+      <Drawer.Screen
+        name="Map"
+        component={MapStack}
+        options={{
+          title: '홈',
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Feed"
+        component={FeedStack}
+        options={{
+          title: '피드',
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{
+          title: '캘린더',
+          headerLeft: () => <DrawerButton />,
+        }}
+      />
+      <Drawer.Screen
+        name="Setting"
+        component={SettingStack}
+        options={{
+          title: '설정',
+          headerShown: false,
+          drawerItemStyle: {height: 0},
+        }}
+      />
+    </Drawer.Navigator>
+  );
+}

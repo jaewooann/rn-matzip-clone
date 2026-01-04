@@ -1,11 +1,14 @@
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
-import React from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import React, {Suspense} from 'react';
 import FeedFavoriteList from '@/components/feed/FeedFavoriteList';
+import Indicator from '@/components/common/Indicator';
 
 const FeedFavoriteScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <FeedFavoriteList />
+      <Suspense fallback={<Indicator size="large" />}>
+        <FeedFavoriteList />
+      </Suspense>
     </SafeAreaView>
   );
 };

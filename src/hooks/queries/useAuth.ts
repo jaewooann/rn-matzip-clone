@@ -1,4 +1,5 @@
 import {
+  editProfile,
   getAccessToken,
   getProfile,
   logout,
@@ -6,7 +7,7 @@ import {
   postSignup,
 } from '@/api/auth';
 import queryClient from '@/api/queryClient';
-import {queryKeys, storageKey} from '@/constants/key';
+import {queryKeys, storageKeys} from '@/constants/key';
 import {numbers} from '@/constants/numbers';
 import {UseMutationCustomOptions, useQueryCustomOptions} from '@/types/api';
 import {Profile} from '@/types/domain';
@@ -18,6 +19,7 @@ import {useEffect} from 'react';
 function useSignup(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: postSignup,
+    throwOnError: error => Number(error.response?.status) >= 500,
     ...mutationOptions,
   });
 }
@@ -27,11 +29,12 @@ function useLogin(mutationOptions?: UseMutationCustomOptions) {
     mutationFn: postLogin,
     onSuccess: async ({accessToken, refreshToken}) => {
       setHeader('Authorization', `Bearer ${accessToken}`);
-      await setEncryptStorage(storageKey.REFRESH_TOKEN, refreshToken);
+      await setEncryptStorage(storageKeys.REFRESH_TOKEN, refreshToken);
       queryClient.fetchQuery({
         queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
       });
     },
+    throwOnError: error => Number(error.response?.status) >= 500,
     ...mutationOptions,
   });
 }
@@ -48,7 +51,7 @@ function useGetRefreshToken() {
     (async () => {
       if (isSuccess) {
         setHeader('Authorization', `Bearer ${data.accessToken}`);
-        await setEncryptStorage(storageKey.REFRESH_TOKEN, data.refreshToken);
+        await setEncryptStorage(storageKeys.REFRESH_TOKEN, data.refreshToken);
       }
     })();
   }, [isSuccess]);
@@ -57,7 +60,7 @@ function useGetRefreshToken() {
     (async () => {
       if (isError) {
         removeHeader('Authorization');
-        await removeEncryptStorage(storageKey.REFRESH_TOKEN);
+        await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       }
     })();
   }, [isError]);
@@ -78,8 +81,21 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
     mutationFn: logout,
     onSuccess: async () => {
       removeHeader('Authorization');
-      await removeEncryptStorage(storageKey.REFRESH_TOKEN);
+      await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
+    },
+    ...mutationOptions,
+  });
+}
+
+function useUpdateProfile(mutationOptions?: UseMutationCustomOptions) {
+  return useMutation({
+    mutationFn: editProfile,
+    onSuccess: newProfile => {
+      queryClient.setQueryData(
+        [queryKeys.AUTH, queryKeys.GET_PROFILE],
+        newProfile,
+      );
     },
     ...mutationOptions,
   });
@@ -93,6 +109,7 @@ function useAuth() {
     enabled: refreshTokenQuery.isSuccess,
   });
   const logoutMutation = useLogout();
+  const profileMutation = useUpdateProfile();
 
   return {
     auth: {
@@ -105,6 +122,7 @@ function useAuth() {
     loginMutation,
     isLogin,
     logoutMutation,
+    profileMutation,
   };
 }
 

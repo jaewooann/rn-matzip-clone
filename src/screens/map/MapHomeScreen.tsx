@@ -17,18 +17,33 @@ import {MapStackParamList} from '@/types/navigation';
 import useGetMarkers from '@/hooks/useGetMarkers';
 import MarkerModal from '@/components/map/MarkerModal';
 import useModal from '@/hooks/useModal';
+import useLocationStore from '@/store/location';
+import MarkerFilterAction from '@/components/map/MarkerFilterAction';
+import useFilterStore from '@/store/filter';
+import useThemeStore, {Theme} from '@/store/theme';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
 const MapHomeScreen = () => {
   const navigation = useNavigation<Navigation>();
   const inset = useSafeAreaInsets();
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
   const {userLocation, isUserLocationError} = useUserLocation();
-  const [selectLocation, setSelectLocation] = useState<LatLng | null>(null);
+  const {selectLocation, setSelectLocation} = useLocationStore();
+  const {filters} = useFilterStore();
   const [markerId, setMarkerId] = useState<number | null>(null);
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
-  const {data: markers = []} = useGetMarkers();
+  const {data: markers = []} = useGetMarkers({
+    select: data =>
+      data.filter(
+        marker =>
+          filters[marker.color] === true &&
+          filters[String(marker.score)] === true,
+      ),
+  });
 
+  const filterAction = useModal();
   const markerModal = useModal();
 
   usePermission('LOCATION');
@@ -71,9 +86,10 @@ const MapHomeScreen = () => {
     <>
       <DrawerButton
         style={[styles.drawerButton, {top: inset.top + 10}]}
-        color={colors.WHITE}
+        color={colors[theme].WHITE}
       />
       <MapView
+        userInterfaceStyle={theme}
         googleMapId="404be0729fdf48297b7f2bd5"
         ref={mapRef}
         style={styles.container}
@@ -98,6 +114,11 @@ const MapHomeScreen = () => {
         {selectLocation && <Marker coordinate={selectLocation} />}
       </MapView>
       <View style={styles.buttonList}>
+        <MapIconButton
+          name="magnifying-glass"
+          onPress={() => navigation.navigate('SearchLocation')}
+        />
+        <MapIconButton name="filter" onPress={filterAction.show} />
         <MapIconButton name="plus" onPress={handlePressAddPost} />
         <MapIconButton
           name="location-crosshairs"
@@ -110,32 +131,38 @@ const MapHomeScreen = () => {
         isVisible={markerModal.isVisible}
         hide={markerModal.hide}
       />
+
+      <MarkerFilterAction
+        isVisible={filterAction.isVisible}
+        hideAction={filterAction.hide}
+      />
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  drawerButton: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    zIndex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    backgroundColor: colors.PINK_700,
-    borderTopRightRadius: 50,
-    borderBottomRightRadius: 50,
-    boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-  },
-  buttonList: {
-    position: 'absolute',
-    bottom: 30,
-    right: 20,
-    zIndex: 1,
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    drawerButton: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      zIndex: 1,
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      backgroundColor: colors[theme].PINK_700,
+      borderTopRightRadius: 50,
+      borderBottomRightRadius: 50,
+      boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+    },
+    buttonList: {
+      position: 'absolute',
+      bottom: 30,
+      right: 20,
+      zIndex: 1,
+    },
+  });
 
 export default MapHomeScreen;

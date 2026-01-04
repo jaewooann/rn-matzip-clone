@@ -20,6 +20,7 @@ import useMutationCreatePost from '@/hooks/queries/useMutationCreatePost';
 import {useNavigation} from '@react-navigation/native';
 import PreviewImageList from '@/components/common/PreviewImageList';
 import ScoreInput from '@/components/post/ScoreInput';
+import useThemeStore from '@/store/theme';
 
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
@@ -30,12 +31,13 @@ const AddLocationScreen = ({route}: Props) => {
   const address = useGetAddress(location);
   const [openDate, setOpenDate] = useState(false);
   const imagePicker = useImagePicker({initialImages: []});
+  const {theme} = useThemeStore();
   const postForm = useForm({
     initialValues: {
       title: '',
       description: '',
       date: new Date(),
-      color: colors.PINK_400,
+      color: colors[theme].PINK_400,
       score: 3,
     },
     validate: validateAddPost,
